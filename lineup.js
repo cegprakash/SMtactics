@@ -23,10 +23,10 @@ var lineup = {
   formations = this.formations;
   this.formation = this.formations[src.match(/<div id="formactual">([^<]+)</)[1]];
  },
- fromStruct: function(struc)
+ fromStruct: function(struct)
  {
   for (var i in struct) {
-   this.i = struct[i];
+   this[i] = struct[i];
   }
  },
  toStruct: function()
@@ -98,6 +98,13 @@ var lineup = {
     }
    }
   }
+ },
+ getLocalLineup: function()
+ {
+  var response = document.body.innerHTML;
+  this.parseFormations(response);
+  this.parseLineup(response);
+  storage.getMe('lineup');
  },
  getLineup: function()
  {

@@ -9,7 +9,8 @@
   },
   "content_scripts": [
     {
-      "matches" : ["http://*.strikermanager.com/inicio.php*"],
+      "matches" : ["http://*.strikermanager.com/alineacion.php*"],
+      "all_frames" : true,
       "include_globs" : ["http://en*.strikermanager.com*"],
       "js":["remote.js","player.js","tactic.js","advtactic.js","lineup.js","shooters.js","storage.js","popup.js"]
     }

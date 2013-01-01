@@ -92,6 +92,9 @@ var advtactic = {
    src = document.getElementsByClassName('bframe').innerHTML;
   }
   var matches = src.match(/edit_tactica\.php\?accion=borrar&id=(\d+)/g);
+  if (!matches) {
+   return [];
+  }
   var ret = [];
   for (var i = 0; i < matches.length; i++) {
    ret.push(matches[i].match(/edit_tactica\.php\?accion=borrar&id=(\d+)/)[1]);
@@ -124,24 +127,35 @@ var advtactic = {
   this.formation = frm.formacion.value;
   this.tactic = frm.tactica.value;
   // subs in jugador, out suplente
-  this.subs.in[1] = frm.jugador1.value;
-  this.subs.in[2] = frm.jugador2.value;
-  this.subs.in[3] = frm.jugador3.value;
-  this.subs.out[1] = frm.suplente1.value;
-  this.subs.out[2] = frm.suplente2.value;
-  this.subs.out[3] = frm.suplente3.value;
+  this.subs.in[0] = frm.jugador1.value;
+  this.subs.in[1] = frm.jugador2.value;
+  this.subs.in[2] = frm.jugador3.value;
+  this.subs.out[0] = frm.suplente1.value;
+  this.subs.out[1] = frm.suplente2.value;
+  this.subs.out[2] = frm.suplente3.value;
  },
  getFormData: function() {
   var ret = {};
   for (var i = 0; i < this.formdata.length; i++) {
-   ret[this.formdata[i]] = this[this.formdata[i]];
+   ret[this.formtranslate[this.formdata[i]].name] = this[this.formdata[i]];
   }
-  ret['jugador1'] = this.subs.in[1];
-  ret['jugador2'] = this.subs.in[2];
-  ret['jugador3'] = this.subs.in[3];
-  ret['suplente1'] = this.subs.out[1];
-  ret['suplente2'] = this.subs.out[2];
-  ret['suplente3'] = this.subs.out[3];
+  ret['accion'] = 'insertar';
+  ret['id'] = '';
+  if (!this.subs) {
+   ret['jugador1'] = "0";
+   ret['jugador2'] = "0";
+   ret['jugador3'] = "0";
+   ret['suplente1'] = "0";
+   ret['suplente2'] = "0";
+   ret['suplente3'] = "0";
+   return ret;
+  }
+  ret['jugador1'] = this.subs.in[0];
+  ret['jugador2'] = this.subs.in[1];
+  ret['jugador3'] = this.subs.in[2];
+  ret['suplente1'] = this.subs.out[0];
+  ret['suplente2'] = this.subs.out[1];
+  ret['suplente3'] = this.subs.out[2];
   return ret
  },
  submitForm: function(callback) {
@@ -166,12 +180,15 @@ var advtactic = {
      storage.getMe('advtactic');
     });
    }
+   if (!urls.length) {
+    storage.getMe('advtactic');
+   }
   });
  },
  setAdvancedTactics: function(callback) {
   self = this;
   remote.get("http://en3.strikermanager.com/tactica_avanzada.php", "", function(response) {
-   var urls = self.getDeleteURLS(response);
+   var durls = self.getDeleteURLS(response);
    var done = 0;
    var counter2 = function(response) {
     done++;
@@ -192,6 +209,11 @@ var advtactic = {
    }
    for (var i = 0; i < durls.length; i++) {
     remote.get(durls[i], "", counter);
+   }
+   if (!durls.length) {
+    for (var i = 0; i < advtactics.length; i++) {
+     advtactics[i].submitForm(counter2);
+    }
    }
   });
  }

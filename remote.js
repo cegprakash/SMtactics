@@ -1,11 +1,12 @@
 var remote = {
  encode: function(arr)
  {
-  var ret = {};
+  var ret = '';
   for (var i in arr) {
-   ret[i] = encodeURIComponent(arr[i]);
+   if (ret) ret += '&';
+   ret += i + "=" + encodeURIComponent(arr[i]);
   }
-  return ret.join("&");
+  return ret;
  },
  prepare: function(url, body, callback)
  {
