@@ -1,28 +1,28 @@
 {
-  "name": "Striker Manager Transfer Market",
-  "version": "1.0.3",
+  "name": "Striker Manager Tactics Manager",
+  "version": "0.1.0",
   "manifest_version": 2,
-  "description": "Striker Manager transfer agreement market application, augments the auction and loan markets at en3.strikermanager.com",
+  "description": "Striker Manager Tactics manager",
   "background": { "scripts": ["background.js"] },
+  "page_action": {
+    "default_title": "Tactics Manager is Available"
+  },
   "content_scripts": [
     {
       "matches" : ["http://*.strikermanager.com/inicio.php*"],
       "include_globs" : ["http://en*.strikermanager.com*"],
-      "js":["parent.js"]
+      "js":["remote.js","player.js","tactic.js","advtactic.js","lineup.js","shooters.js","storage.js","popup.js"]
     }
   ],
-  "options_page": "options.html",
-  "icons": { "16": "icon16.png",
-             "48": "icon48.png",
-            "128": "icon128.png" },
-  "web_accessible_resources" : [
-    "icon16.png"
-  ],
+  //"icons": { "16": "icon16.png",
+    //         "48": "icon48.png",
+      //      "128": "icon128.png" },
   "permissions": [
     "http://en3.strikermanager.com/",
     "http://en2.strikermanager.com/",
     "http://en1.strikermanager.com/",
     "http://en.strikermanager.com/",
-    "storage"
+    "storage",
+    "tabs"
   ]
 }

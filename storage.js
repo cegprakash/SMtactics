@@ -2,17 +2,21 @@ storage = {
  alltactics: {},
  finished: {},
  callback: null,
+ retrievedAdvanced: false,
  getTactics: function(callback)
  {
+  this.callback = callback;
+  this.retrievedAdvanced = false;
   this.finished = {};
-  tactics.getTactics();
-  formation.getFormations();
+  tactic.getTactics();
   lineup.getLineup();
   shooters.getShooters();
  },
  getAdvancedTactics: function()
  {
-  advtactics.getAdvancedTactics();
+  if (this.retrievedAdvanced) return;
+  this.retrievedAdvanced = true;
+  advtactic.getAdvancedTactics();
  },
  advtacticcount: 0,
  advtacticreceived: 0,
@@ -23,24 +27,22 @@ storage = {
    this.finished.countreceived = true;
    return;
   }
-  this.finished[caller] = 1;
-  if (this.finished.tactics && this.finished.formations) {
-   this.getAdvancedTactics();
+  if (caller == 'advtactic') {
+   this.advtacticreceived++;
+   if (this.advtacticcount != this.advtacticreceived) {
+    return;
+   }
+  } else {
+   this.finished[caller] = 1;
+   if (this.finished.tactics && this.finished.lineup && this.finished.shooters) {
+    this.getAdvancedTactics();
+   }
   }
   if (!this.finished.countreceived) {
    return;
   }
-  if (caller == 'advtactic') {
-   this.advtacticreceived++;
-  }
-  if (this.advtacticcount != this.advtacticreceived) {
-   return;
-  }
-  if (!this.finished.lineup) {
-   return;
-  }
-  if (callback) {
-   adv = [];
+  if (this.callback) {
+   var adv = [];
    for (var i = 0; i < this.advtacticcount; i++) {
     adv.push(advtactics[i].toStruct());
    }
@@ -48,10 +50,10 @@ storage = {
     'lineup' : lineup.toStruct(),
     'advtactics' : adv,
     'shooters' : shooters.toStruct(),
-    'tactics' : tactics,
+    'tactics' : tactic,
     'formations' : formations
    };
-   callback(result);
+   this.callback(result);
   }
  },
  removeTactic: function(name, callback) {
@@ -74,14 +76,14 @@ storage = {
   if (!this.alltactics[name]) {
    throw new Exception('Unknown tactic set: ' + name);
   }
-  tactic = this.alltactics[name];
-  tactics = tactic.tactics;
-  formations = tactic.formations;
+  var savetactic = this.alltactics[name];
+  tactics = savetactic.tactics;
+  formations = savetactic.formations;
   advtactic.setFormations(formations);
   advtactic.setTactics(tactics);
-  advtactic.fromArr(tactic.advtactics);
-  lineup.fromStruct(tactic.lineup);
-  shooters.fromStruct(tactic.shooters);
+  advtactic.fromArr(savetactic.advtactics);
+  lineup.fromStruct(savetactic.lineup);
+  shooters.fromStruct(savetactic.shooters);
   lineup.setLineup()
  }
 }

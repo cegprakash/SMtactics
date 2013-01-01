@@ -25,23 +25,23 @@ var remote = {
   var res = this.prepare(url, body, callback);
   var xhr = res[0];
   body = res[1];
-  xhr.open(url, "post");
+  xhr.open("post", url, true);
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   xhr.send(body);
  },
  get: function(url, params, callback)
  {
-  var res = this.prepare(url, body, callback);
+  var res = this.prepare(url, params, callback);
   var xhr = res[0];
   body = res[1];
-  xhr.open(url + "?" + body, "get");
+  xhr.open("get", url + "?" + body, true);
   xhr.send();
  },
  getHTMLDocument: function(url, callback)
  {
   var res = this.prepare(url, "", this.makeDocument(callback));
   var xhr = res[0];
-  xhr.open(url, "get");
+  xhr.open("get", url, true);
   xhr.send();
  },
  makeDocument: function(callback)

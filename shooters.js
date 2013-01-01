@@ -30,11 +30,12 @@ var shooters = {
   remote.get("http://en3.strikermanager.com/tactica.php", "", function(response) {
    var doc = document.implementation.createHTMLDocument("stuff");
    doc.documentElement.innerHTML = response;
-   self.tactic = response.match(/<a href="tactica2.php\?id_tactica=(\d+)">[^<]+<\/a>\s+<\/td>\s+<td style="width:30%;" class="centrado2">\s+Active/);
-   this.freekick = doc.frm.falta.value;
-   this.penalties = doc.frm.penalti.value;
-   this.corners = doc.frm.corner.value;
-   this.captain = doc.frm.capitan.value;
+   self.tactic = response.match(/<a href="tactica2.php\?id_tactica=(\d+)">[^<]+<\/a>\s+<\/td>\s+<td style="width:30%;" class="centrado2">\s+Active/)[1];
+   var frm = doc.forms.frm;
+   self.freekick = frm.falta.value;
+   self.penalties = frm.penalti.value;
+   self.corners = frm.corner.value;
+   self.captain = frm.capitan.value;
    storage.getMe("shooters");
   });
  },

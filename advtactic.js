@@ -1,4 +1,4 @@
-var advtactics = [];
+var advtactics = [], advtest = {};
 var advtactic = {
  class: "advtactic",
  minute: "",
@@ -46,7 +46,7 @@ var advtactic = {
   }
  },
  setTactics: function(tactics) {
-  this.formtranslate.tactics.values = tactics;
+  this.formtranslate.tactic.values = tactics;
  },
  setFormations: function(formations) {
   this.formtranslate.formation.values = formations;
@@ -91,15 +91,16 @@ var advtactic = {
   if (!src) {
    src = document.getElementsByClassName('bframe').innerHTML;
   }
-  var matches = src.match(/edit_tactica.php?accion=borrar&id=(\d+)/g);
+  var matches = src.match(/edit_tactica\.php\?accion=borrar&id=(\d+)/g);
   var ret = [];
   for (var i = 0; i < matches.length; i++) {
-   ret.push(matches[i].match(/edit_tactica.php?accion=borrar&id=(\d+)/)[1]);
+   ret.push(matches[i].match(/edit_tactica\.php\?accion=borrar&id=(\d+)/)[1]);
   }
   return ret;
  },
  getEditURLS: function(src) {
   var ids = this.getIds(src);
+  var ret = [];
   for (var i = 0; i < ids.length; i++) {
    ret.push("http://en3.strikermanager.com/edit_tactica.php?id=" + ids[i]);
   }
@@ -107,6 +108,7 @@ var advtactic = {
  },
  getDeleteURLS: function(src) {
   var ids = this.getIds(src);
+  var ret = [];
   for (var i = 0; i < ids.length; i++) {
    ret.push("http://en3.strikermanager.com/edit_tactica.php?accion=borrar&id=" + ids[i]);
   }
@@ -116,10 +118,11 @@ var advtactic = {
   if (!doc) {
    doc = document;
   }
-  var frm = doc.frm;
-  for (var i in this.formtranslate) {
-   this[i] = frm[this.formtranslate[i].name].value;
-  }
+  var frm = doc.forms.frm;
+  this.minute = frm.tiempo_juego.value;
+  this.status = frm.situacion_partido.value;
+  this.formation = frm.formacion.value;
+  this.tactic = frm.tactica.value;
   // subs in jugador, out suplente
   this.subs.in[1] = frm.jugador1.value;
   this.subs.in[2] = frm.jugador2.value;
@@ -150,13 +153,15 @@ var advtactic = {
    var urls = self.getEditURLS(response);
    storage.getMe(['advtacticcount', urls.length]);
    advtactics = [];
-   for (var i = 0; i < durls.length; i++) {
+   for (var i = 0; i < urls.length; i++) {
     var guy = {};
-    for (var i in self) {
-     guy[i] = self[i];
+    for (var dup in self) {
+     guy[dup ] = self[dup];
     }
-    remote.getHTMLDocument(urls[i], function (response) {
+    remote.getHTMLDocument(urls[i], function (doc) {
      guy.getFormValues(doc);
+     if (advtest[guy.minute]) return;
+     advtest[guy.minute] = true;
      advtactics.push(guy);
      storage.getMe('advtactic');
     });

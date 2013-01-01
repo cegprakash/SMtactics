@@ -10,11 +10,12 @@ var formation = {
  },
  parseFormations: function(doc)
  {
-  var results = doc.getElementsByTagName("a");
-  for (var i = 0; i < results.length; i++) {
-   var match = results[i].href.match(/formacion2\.php\?id_formacion=([0-9]+)/);
+  var results = doc.evaluate("//a[starts-with(@href,'formacion2.php?id_formacion')]", doc, null,
+                                    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+  for(var i = 0; i < results.snapshotLength; i++) {
+   var match = results.snapshotItem(i).href.match(/formacion2\.php\?id_formacion=([0-9]+)/);
    if (match) {
-    formations[results[i].firstChild.nodeValue] = match[1];
+    formations[results.snapshotItem(i).firstChild.nodeValue] = match[1];
    }
   }
   advtactic.setFormations(formations);

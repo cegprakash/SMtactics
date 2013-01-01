@@ -1,3 +1,4 @@
+var formations = {};
 var lineup = {
  class: "lineup",
  formation: "",
@@ -18,6 +19,8 @@ var lineup = {
     this.formations[info[2]] = info[1];
    }
   }
+  advtactic.setFormations(this.formations);
+  formations = this.formations;
   this.formation = this.formations[src.match(/<div id="formactual">([^<]+)</)[1]];
  },
  fromStruct: function(struc)
