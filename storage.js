@@ -64,20 +64,18 @@ storage = {
   }
   chrome.storage.sync.set({'SMTactics': this.alltactics}, callback);
  },
- saveTactics: function(n, callback) {
-  var name = n;
+ saveTactics: function(n, c) {
+  var name = n, callback = c;
   this.getTactics(function(tactic) {
    if (!storage.alltactics) {
     storage.alltactics = {};
    }
-   storage.alltactics[name] = tactic;
-   chrome.storage.sync.set({'SMTactics': storage.alltactics}, function() {
-    callback();
-   });
+   tactic.name = name;
+   this.saveTacticInStorage(tactic, callback);
   });
  },
- setAlltactics: function(t) {
-  this.alltactics = t;
+ addTacticSet: function(t, s) {
+  this.alltactics[t] = s;
  },
  restoreTactic: function(name, callback) {
   if (!this.alltactics[name]) {
@@ -126,6 +124,8 @@ storage = {
    outera.appendChild(document.createTextNode("Load Tactic Set"));
    div = document.createElement('div');
    div.className = "menujugador";
+   div.style.position = "absolute";
+   div.style.left = "160px";
    div.appendChild(outera);
    div.appendChild(innerdiv);
    div.style.marginRight = "160px";
@@ -143,12 +143,13 @@ storage = {
   for (var i in this.alltactics) {
    a = document.createElement('a');
    a.className = "boton";
+   a.style.position = "absolute";
    a.appendChild(document.createTextNode(i));
    a.href="#";
    a.addEventListener("click", storage.getRestoreFunc(i));
    innerdiv.appendChild(a);
   }
-  this.saveLinkDiv.insertAdjacentElement("beforeBegin", div);
+  this.saveLinkDiv.insertAdjacentElement("afterEnd", div);
  },
  getRestoreFunc: function(name) {
   var tac = name;
@@ -159,8 +160,46 @@ storage = {
   };
  },
  saveLinkDiv: null,
+ tacticNames: [],
+ setTacticnames: function(a)
+ {
+  if (!a) a = [];
+  this.tacticNames = a;
+ },
+ getSetName: function(i)
+ {
+  return "SMTactics.tactic" + String(i);
+ },
+ getNextSetName: function()
+ {
+  return this.getSetName(this.tacticNames.length + 1);
+ },
+ getSaveTacticStruct: function(tactic) {
+  return {
+   name: tactic.name,
+   tactic: tactic
+  };
+ },
+ saveTacticInStorage: function(tactic, callback) {
+  var struct = this.getSaveTacticStruct(tactic);
+  var name;
+  if (this.alltactics[tactic.name]) {
+    name = tactic.setname;
+  } else {
+    name = this.getNextSetName();
+  }
+  this.tacticNames.push(name);
+  tactic.setname = name;
+  this.alltactics[tactic.name] = tactic;
+  var set = {'SMTactics.sets': this.tacticNames}
+  for (var i in this.alltactics) {
+   set[this.alltactics[i].setname] = this.alltactics[i];
+  }
+  console.log(JSON.stringify(set));
+  chrome.storage.sync.set(set, callback);
+ },
  makeSaveLink: function() {
-  var link = document.getElementsByClassName('container_oro')[0].nextSibling.nextSibling;
+  var link = document.getElementsByClassName('botonesright')[0].firstChild.nextSibling;
   var a = document.createElement('a');
   var outera = document.createElement('a');
   var div = document.createElement('div');
@@ -169,6 +208,8 @@ storage = {
   outera.className = "boton botonmenujugador";
   outera.appendChild(document.createTextNode("Save Tactic Set"));
   div.className = "menujugador";
+  div.style.left = "0px";
+  div.style.position = "absolute";
   div.addEventListener("mouseover", function() {
    innerdiv.style.display = "block";
   });
@@ -177,6 +218,8 @@ storage = {
   });
   innerdiv.className = "jugadormenuflotante";
   a.className = "boton";
+  a.style.left = "0px";
+  a.style.position = "absolute";
   a.appendChild(document.createTextNode("Save New"));
   a.href="#";
   a.addEventListener("click", storage.click);
@@ -187,10 +230,16 @@ storage = {
   link.insertAdjacentElement("beforeBegin", div);
  }
 }
-chrome.storage.sync.get(['SMTactics'], function(a) {
- if (a['SMTactics']) {
-  storage.setAlltactics(a['SMTactics']);
+chrome.storage.sync.get(['SMTactics.sets'], function(a) {
+ if (a['SMTactics.sets']) {
+  storage.setTacticnames(a['SMTactics.sets']);
+  var sets = a['SMTactics.sets']
+  chrome.storage.sync.get(sets, function (b) {
+    for (var i = 0; i < sets.length; i++) {
+      storage.addTacticSet(b[sets[i]].name, b[sets[i]]);
+      storage.makeRestoreLink();
+    }
+  });
  }
- storage.makeRestoreLink();
 });
 storage.makeSaveLink();
