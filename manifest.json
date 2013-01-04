@@ -1,12 +1,8 @@
 {
   "name": "Striker Manager Tactics Manager",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "manifest_version": 2,
   "description": "Striker Manager Tactics manager",
-  "background": { "scripts": ["background.js"] },
-  "page_action": {
-    "default_title": "Tactics Manager is Available"
-  },
   "content_scripts": [
     {
       "matches" : ["http://*.strikermanager.com/alineacion.php*"],
@@ -15,9 +11,6 @@
       "js":["remote.js","player.js","tactic.js","advtactic.js","lineup.js","shooters.js","storage.js","popup.js"]
     }
   ],
-  //"icons": { "16": "icon16.png",
-    //         "48": "icon48.png",
-      //      "128": "icon128.png" },
   "permissions": [
     "http://en3.strikermanager.com/",
     "http://en2.strikermanager.com/",

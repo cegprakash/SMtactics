@@ -111,6 +111,25 @@ storage = {
    storage.makeRestoreLink(); // re-construct the list of tactics
   });
  },
+ makeImportLink: function()
+ {
+  var p = document.getElementsByClassName('datoscambio')[0].nextElementSibling.nextElementSibling;
+  a = document.createElement('a');
+  a.className = "boton";
+  a.id = 'SMImport';
+  a.appendChild(document.createTextNode("Import Tactics"));
+  a.href="#";
+  a.addEventListener("click", storage.getImportFunc);
+  p.insertAdjacentElement("afterEnd", a);
+  var p = a;
+  a = document.createElement('a');
+  a.className = "boton";
+  a.id = 'SMExport';
+  a.appendChild(document.createTextNode("Export Tactics"));
+  a.href="#";
+  a.addEventListener("click", storage.getExportFunc);
+  p.insertAdjacentElement("afterEnd", a);
+ },
  makeRestoreLink: function() {
   var div = document.getElementById("SMTacticsDiv");
   var innerdiv;
@@ -165,6 +184,38 @@ storage = {
     storage.alert("Tactic " + tac + " restored.  Be sure to check the line-up, shooters and tactics to be sure!");
    });
   };
+ },
+ showExport: function(t) {
+  var tac = t;
+  return function() {
+    storage.alert(t.replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;') +
+                  '<br><textarea rows="20" cols="30" id="tactica" style="background-color:black;color:white;font-size:small;font-weight:bold;">' +
+                  JSON.stringify(storage.alltactics[tac]) + '</textarea>');
+  }
+ },
+ getExportFunc: function() {
+  var text = "<p>Click a tactic set name to export:</p>";
+  for (var i in storage.alltactics) {
+    text += "<p><a href=\"#\" id=\"" + i.replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;') + "\">"
+         +  i.replace('<', '&lt;').replace('>', '&gt;').replace('&', '&amp;') + "</a></p>";
+  }
+  storage.alert(text);
+  for (var i in storage.alltactics) {
+    document.getElementById(i).addEventListener("click", storage.showExport(i));
+  }
+ },
+ getImportFunc: function() {
+  var tac = prompt("Name of the tactic?");
+  var inside = prompt("Please enter the exported tactic here");
+  try {
+    var tactic = JSON.parse(inside);
+    tactic.name = tac;
+    delete tactic.setname;
+    storage.alltactics[tac] = tactic;
+    storage.makeRestoreLink();
+  } catch (e) {
+    storage.alert("Error: could not process tactic");
+  }
  },
  saveLinkDiv: null,
  tacticNames: [],
@@ -239,6 +290,8 @@ storage = {
   link.insertAdjacentElement("beforeBegin", div);
  }
 }
+storage.makeImportLink();
+storage.makeSaveLink();
 chrome.storage.sync.get(['SMTactics.sets'], function(a) {
  if (a['SMTactics.sets']) {
   storage.setTacticnames(a['SMTactics.sets']);
@@ -251,4 +304,3 @@ chrome.storage.sync.get(['SMTactics.sets'], function(a) {
   });
  }
 });
-storage.makeSaveLink();
