@@ -113,7 +113,7 @@ storage = {
  },
  makeRestoreLink: function() {
   var div = document.getElementById("SMTacticsDiv");
-  var innerdiv
+  var innerdiv;
   if (!div) {
    innerdiv = document.createElement('div');
    innerdiv.id = "smtacticsinner"
@@ -123,32 +123,39 @@ storage = {
    outera.className = "boton botonmenujugador";
    outera.appendChild(document.createTextNode("Load Tactic Set"));
    div = document.createElement('div');
+   div.id = "SMTacticsDiv";
    div.className = "menujugador";
    div.style.position = "absolute";
    div.style.left = "160px";
    div.appendChild(outera);
    div.appendChild(innerdiv);
    div.style.marginRight = "160px";
+   div.style.zIndex = 99;
+   div.addEventListener("mouseover", function() {
+    innerdiv.style.display = "block";
+   });
+   div.addEventListener("mouseout", function() {
+    innerdiv.style.display = "none";
+   });
   } else {
    innerdiv = document.getElementById('smtacticsinner');
    innerdiv.innerHTML = "";
   }
-  div.addEventListener("mouseover", function() {
-   innerdiv.style.display = "block";
-  });
-  div.addEventListener("mouseout", function() {
-   innerdiv.style.display = "none";
-  });
-  var a;
+  var a, top = 0;
   for (var i in this.alltactics) {
    a = document.createElement('a');
    a.className = "boton";
    a.style.position = "absolute";
    a.appendChild(document.createTextNode(i));
    a.href="#";
+   if (top) {
+    a.style.top = String(top) + "px";
+   }
+   top += 23;
    a.addEventListener("click", storage.getRestoreFunc(i));
    innerdiv.appendChild(a);
   }
+  div.style.height = String(top) + "px";
   this.saveLinkDiv.insertAdjacentElement("afterEnd", div);
  },
  getRestoreFunc: function(name) {
@@ -187,9 +194,9 @@ storage = {
     name = tactic.setname;
   } else {
     name = this.getNextSetName();
+    this.tacticNames.push(name);
+    tactic.setname = name;
   }
-  this.tacticNames.push(name);
-  tactic.setname = name;
   this.alltactics[tactic.name] = tactic;
   var set = {'SMTactics.sets': this.tacticNames}
   for (var i in this.alltactics) {
@@ -197,6 +204,7 @@ storage = {
   }
   console.log(JSON.stringify(set));
   chrome.storage.sync.set(set, callback);
+  this.makeRestoreLink();
  },
  makeSaveLink: function() {
   var link = document.getElementsByClassName('botonesright')[0].firstChild.nextSibling;
@@ -237,8 +245,8 @@ chrome.storage.sync.get(['SMTactics.sets'], function(a) {
   chrome.storage.sync.get(sets, function (b) {
     for (var i = 0; i < sets.length; i++) {
       storage.addTacticSet(b[sets[i]].name, b[sets[i]]);
-      storage.makeRestoreLink();
     }
+    storage.makeRestoreLink();
   });
  }
 });
