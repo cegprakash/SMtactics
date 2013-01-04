@@ -90,9 +90,11 @@ storage = {
   lineup.fromStruct(lineup, savetactic.lineup);
   shooters.fromStruct(savetactic.shooters);
   var save = [], savefunc = function () {save.push(1); if (save.length >= 3) {callback();}};
-  lineup.setLineup(savefunc)
-  advtactic.setAdvancedTactics(savefunc);
-  shooters.setShooters(savefunc);
+  lineup.setLineup(function() {
+    savefunc();
+    advtactic.setAdvancedTactics(savefunc);
+    shooters.setShooters(savefunc);
+  });
  },
  alert: function(text)
  {
