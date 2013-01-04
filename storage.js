@@ -87,7 +87,7 @@ storage = {
   advtactic.setFormations(formations);
   advtactic.setTactics(tactics);
   advtactic.fromArray(savetactic.advtactics);
-  lineup.fromStruct(savetactic.lineup);
+  lineup.fromStruct(lineup, savetactic.lineup);
   shooters.fromStruct(savetactic.shooters);
   var save = [], savefunc = function () {save.push(1); if (save.length >= 3) {callback();}};
   lineup.setLineup(savefunc)
@@ -191,12 +191,13 @@ storage = {
   var struct = this.getSaveTacticStruct(tactic);
   var name;
   if (this.alltactics[tactic.name]) {
-    name = tactic.setname;
+    name = this.alltactics[tactic.name];
   } else {
     name = this.getNextSetName();
     this.tacticNames.push(name);
-    tactic.setname = name;
   }
+  tactic.setname = name;
+  delete this.alltactics[tactic.name];
   this.alltactics[tactic.name] = tactic;
   var set = {'SMTactics.sets': this.tacticNames}
   for (var i in this.alltactics) {

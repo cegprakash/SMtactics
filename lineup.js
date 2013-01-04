@@ -23,10 +23,25 @@ var lineup = {
   formations = this.formations;
   this.formation = this.formations[src.match(/<div id="formactual">([^<]+)</)[1]];
  },
- fromStruct: function(struct)
+ fromStruct: function(self, struct)
  {
-  for (var i in struct) {
-   this[i] = struct[i];
+  self.class = "lineup",
+  self.formation = struct.formation;
+  self.formations = struct.formations;
+  self.starters = [];
+  for (var i = 0; i < struct.starters.length; i++) {
+   var v = struct.starters[i];
+   self.starters.push(player.create(v.id, v.name, v.position, v.average, v.index));
+  }
+  self.subs = [];
+  for (var i = 0; i < struct.subs.length; i++) {
+   var v = struct.subs[i];
+   self.subs.push(player.create(v.id, v.name, v.position, v.average, v.index));
+  }
+  self.reserves = [];
+  for (var i = 0; i < struct.reserves.length; i++) {
+   var v = struct.reserves[i];
+   self.reserves.push(player.create(v.id, v.name, v.position, v.average, v.index));
   }
  },
  toStruct: function()
@@ -45,6 +60,12 @@ var lineup = {
   var info = [];
   for (var i = 0; i < this.starters.length; i++) {
    info[this.starters[i].index - 1] = this.starters[i].id;
+  }
+  for (var i = 0; i < this.subs.length; i++) {
+   info[this.subs[i].index - 1] = this.subs[i].id;
+  }
+  for (var i = 0; i < this.reserves.length; i++) {
+   info[this.reserves[i].index - 1] = this.reserves[i].id;
   }
   return 'http://en3.strikermanager.com/save_alineacion.php?formacion='+this.formation+'&posiciones='+info.join(',')+"&pag=1&juvenil=0";
  },
@@ -89,7 +110,7 @@ var lineup = {
    for (var i = 0; i < matches.length; i++) {
     var info = matches[i].match(localsearch);
     var cur = player.create(info[1], info[2], positions[info[3]], info[4], info[5]);
-    if (i < 12) {
+    if (i < 11) {
      this.starters.push(cur);
     } else if (i < 18) {
      this.subs.push(cur);
