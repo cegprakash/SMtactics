@@ -27,7 +27,7 @@ var shooters = {
  getShooters: function()
  {
   var self = this;
-  remote.get("http://en3.strikermanager.com/tactica.php", "", function(response) {
+  remote.get("/tactica.php", "", function(response) {
    var doc = document.implementation.createHTMLDocument("stuff");
    doc.documentElement.innerHTML = response;
    self.tactic = response.match(/<a href="tactica2.php\?id_tactica=(\d+)">[^<]+<\/a>\s+<\/td>\s+<td style="width:30%;" class="centrado2">\s+Active/)[1];
@@ -41,8 +41,8 @@ var shooters = {
  },
  setShooters: function(callback)
  {
-  remote.get("http://en3.strikermanager.com/tactica.php", {id_tactica: this.tactic}, callback);
-  remote.post("http://en3.strikermanager.com/tactica.php",
+  remote.get("/tactica.php", {id_tactica: this.tactic}, callback);
+  remote.post("/tactica.php",
               {falta: this.freekick, penalti: this.penalties, corner: this.corners, capitan: this.captain},
               callback);
  }

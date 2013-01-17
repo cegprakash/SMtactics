@@ -6,7 +6,7 @@ var formation = {
  getFormations: function()
  {
   formations = [];
-  remote.getHTMLDocument("http://en3.strikermanager.com/formacion2.php", this.parseFormations);
+  remote.getHTMLDocument("/formacion2.php", this.parseFormations);
  },
  parseFormations: function(doc)
  {

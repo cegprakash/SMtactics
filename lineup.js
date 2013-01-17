@@ -67,7 +67,7 @@ var lineup = {
   for (var i = 0; i < this.reserves.length; i++) {
    info[this.reserves[i].index - 1] = this.reserves[i].id;
   }
-  return 'http://en3.strikermanager.com/save_alineacion.php?formacion='+this.formation+'&posiciones='+info.join(',')+"&pag=1&juvenil=0";
+  return '/save_alineacion.php?formacion='+this.formation+'&posiciones='+info.join(',')+"&pag=1&juvenil=0";
  },
  parseLineup: function(src)
  {
@@ -130,7 +130,7 @@ var lineup = {
  getLineup: function()
  {
   self = this;
-  remote.get("http://en3.strikermanager.com/alineacion.php", "", function(response) {
+  remote.get("/alineacion.php", "", function(response) {
    self.parseFormations(response);
    self.parseLineup(response);
    storage.getMe('lineup');

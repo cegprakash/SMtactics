@@ -1,6 +1,6 @@
 {
   "name": "Striker Manager Tactics Manager",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "manifest_version": 2,
   "description": "Striker Manager Tactics manager",
   "content_scripts": [

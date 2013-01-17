@@ -12,7 +12,7 @@ var tactic = {
  getTactics: function()
  {
   tactics = {};
-  remote.getHTMLDocument("http://en3.strikermanager.com/tactica2.php", this.parseTactics);
+  remote.getHTMLDocument("/tactica2.php", this.parseTactics);
  },
  parseTactics: function(doc)
  {

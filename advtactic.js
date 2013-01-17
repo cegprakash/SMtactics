@@ -147,7 +147,7 @@ var advtactic = {
   var ids = this.getIds(src);
   var ret = [];
   for (var i = 0; i < ids.length; i++) {
-   ret.push("http://en3.strikermanager.com/edit_tactica.php?id=" + ids[i]);
+   ret.push("/edit_tactica.php?id=" + ids[i]);
   }
   return ret;
  },
@@ -155,7 +155,7 @@ var advtactic = {
   var ids = this.getIds(src);
   var ret = [];
   for (var i = 0; i < ids.length; i++) {
-   ret.push("http://en3.strikermanager.com/edit_tactica.php?accion=borrar&id=" + ids[i]);
+   ret.push("/edit_tactica.php?accion=borrar&id=" + ids[i]);
   }
   return ret;
  },
@@ -201,12 +201,12 @@ var advtactic = {
   return ret
  },
  submitForm: function(callback) {
-  remote.post("http://en3.strikermanager.com/edit_tactica.php", this.getFormData(), callback);
+  remote.post("/edit_tactica.php", this.getFormData(), callback);
  },
  getAdvancedTactics: function() {
   self = this;
   advtest = {};
-  remote.get("http://en3.strikermanager.com/tactica_avanzada.php", "", function(response) {
+  remote.get("/tactica_avanzada.php", "", function(response) {
    var urls = self.getEditURLS(response);
    storage.getMe(['advtacticcount', urls.length]);
    advtactics = [];
@@ -278,7 +278,7 @@ var advtactic = {
  },
  setAdvancedTactics: function(callback) {
   self = this;
-  remote.get("http://en3.strikermanager.com/tactica_avanzada.php", "", function(response) {
+  remote.get("/tactica_avanzada.php", "", function(response) {
    var durls = self.getDeleteURLS(response);
    var done = 0;
    var counter2 = function(response) {
