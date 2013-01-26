@@ -1,6 +1,6 @@
 {
   "name": "Striker Manager Tactics Manager",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "manifest_version": 2,
   "description": "Striker Manager Tactics manager",
   "content_scripts": [
@@ -15,6 +15,12 @@
       "all_frames" : true,
       "include_globs" : ["http://en*.strikermanager.com*"],
       "js":["tacticexport.js"]
+    },
+    {
+      "matches" : ["http://*.strikermanager.com/formacion2.php?*"],
+      "all_frames" : true,
+      "include_globs" : ["http://en*.strikermanager.com*"],
+      "js":["formationswap.js"]
     }
   ],
   "permissions": [
