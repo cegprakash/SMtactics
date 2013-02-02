@@ -1,6 +1,6 @@
 {
   "name": "Striker Manager Tactics Manager",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "manifest_version": 2,
   "description": "Striker Manager Tactics manager",
   "content_scripts": [
@@ -9,18 +9,6 @@
       "all_frames" : true,
       "include_globs" : ["http://en*.strikermanager.com*"],
       "js":["remote.js","player.js","tactic.js","advtactic.js","lineup.js","shooters.js","storage.js","popup.js"]
-    },
-    {
-      "matches" : ["http://*.strikermanager.com/tactica2.php?id_tactica=*"],
-      "all_frames" : true,
-      "include_globs" : ["http://en*.strikermanager.com*"],
-      "js":["tacticexport.js"]
-    },
-    {
-      "matches" : ["http://*.strikermanager.com/formacion2.php?*"],
-      "all_frames" : true,
-      "include_globs" : ["http://en*.strikermanager.com*"],
-      "js":["formationswap.js"]
     }
   ],
   "permissions": [
@@ -28,6 +16,7 @@
     "http://en2.strikermanager.com/",
     "http://en1.strikermanager.com/",
     "http://en.strikermanager.com/",
+    "http://es3.strikermanager.com/",
     "storage",
     "tabs"
   ]
